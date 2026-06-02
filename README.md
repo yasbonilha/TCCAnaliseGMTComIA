@@ -1,6 +1,6 @@
 # PINN 3D Transiente para Escoamento ao Redor de Cilindro Aquecido
 
-> Trabalho de Conclusão de Curso — Engenharia, Instituto Mauá de Tecnologia (IMT)
+> Trabalho de Conclusão de Curso - Instituto Mauá de Tecnologia (IMT)
 > Validação metodológica de Physics-Informed Neural Networks (PINN) contra ground-truth de CFD para escoamento externo 3D transiente.
 
 ---
