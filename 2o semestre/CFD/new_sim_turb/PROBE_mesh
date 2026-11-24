@@ -1,0 +1,51 @@
+; =====================================================================
+;  PROBE_mesh  --  le a malha nova e reporta o que precisamos saber ANTES
+;  de escrever o journal de solve.
+;
+;  NAO RODA SOLVER. Le o arquivo e imprime. Segundos.
+;
+;  TRES COISAS QUE SO A MALHA PODE RESPONDER
+;
+;  1. NOMES DAS ZONAS. As condicoes de contorno sao aplicadas POR NOME:
+;         /define/boundary-conditions/set/velocity-inlet velocity-inlet () ...
+;     Se o Ansys renomeou alguma zona ao gerar a malha com body of influence,
+;     esse comando falha -- e falhar aqui nao e um erro isolado: o Fluent fica
+;     com um prompt pendente e come a proxima linha do journal como resposta.
+;     Todo o resto anda um lugar, em silencio. E o modo de falha que mais custou
+;     neste projeto.
+;
+;     A leitura do case ja imprime a lista de zonas de graca, entao isso sai
+;     sem comando nenhum.
+;
+;  2. NUMERO DE CELULAS. Decide a cadencia de gravacao. Na malha antiga,
+;     39.060 celulas davam 7 MB e 3,6 s por CSV. Isso escala: uma malha de
+;     500 mil celulas daria ~90 MB e ~45 s por arquivo, e mil arquivos viram
+;     90 GB e 12 h so de escrita. Sem esse numero, escolher --every e chute.
+;
+;  3. EXTENSAO DO DOMINIO E QUALIDADE. O /mesh/check imprime os limites em
+;     x, y e z, que alimentam o check_field.py, e acusa volume negativo ou
+;     faces degeneradas -- que e o tipo de coisa que faz um solver produzir
+;     numero sem produzir erro.
+;
+;  @MESH@ e substituido pelo probe_mesh.slurm. Nao edite a mao.
+; =====================================================================
+/file/set-tui-version "25.2"
+/file/confirm-overwrite? no
+/file/read-case "@MESH@"
+; ---------------------------------------------------------------------
+; Extensao do dominio e checagem topologica. Forma ja usada em producao
+; neste projeto (foi de onde sairam os limites 0..280, 0..700, 0..190 da
+; malha antiga).
+; ---------------------------------------------------------------------
+/mesh/check
+; ---------------------------------------------------------------------
+; Qualidade. Dentro de ti-menu-load-string porque a forma nao foi verificada
+; neste build: se o comando nao existir com esse nome, a linha em branco
+; seguinte responde ao prompt pendente e o journal segue alinhado, em vez de
+; derrubar o resto.
+; ---------------------------------------------------------------------
+(ti-menu-load-string "/mesh/quality")
+
+(ti-menu-load-string "/mesh/size-info")
+
+/exit yes

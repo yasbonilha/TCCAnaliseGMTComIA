@@ -1,0 +1,227 @@
+
+Fluent
+Version: 3d, dp, pbns, sstkw, transient (3d, double precision, pressure-based, SST k-omega, transient)
+Release: 25.2.0
+Title: 
+
+Models
+------
+
+   Model                        Settings                       
+   ---------------------------------------------------------
+   Space                        3D                             
+   Time                         Unsteady, 2nd-Order Implicit   
+   Viscous                      SST k-omega turbulence model   
+   Heat Transfer                Disabled                       
+   Solidification and Melting   Disabled                       
+   Species                      Disabled                       
+   Coupled Dispersed Phase      Disabled                       
+   NOx Pollutants               Disabled                       
+   SOx Pollutants               Disabled                       
+   Soot                         Disabled                       
+   Mercury Pollutants           Disabled                       
+   Structure                    Disabled                       
+   Acoustics                    Disabled                       
+   Eulerian Wall Film           Disabled                       
+   Potential/Electrochemistry   Disabled                       
+   Multiphase                   Disabled                       
+
+Material Properties
+-------------------
+
+   Material: air (fluid)
+
+      Property    Units      Method     Value(s)     
+      --------------------------------------------
+      Density     kg/m^3     constant   1.225        
+      Viscosity   kg/(m s)   constant   1.7894e-05   
+
+   Material: aluminum (solid)
+
+      Property   Units    Method     Value(s)   
+      ---------------------------------------
+      Density    kg/m^3   constant   2719       
+
+Cell Zone Conditions
+--------------------
+
+   Zones
+
+      name     id    type    material   
+      -------------------------------
+      domain   459   fluid   air        
+
+   Setup Conditions
+
+      domain
+
+         Condition       Value   
+         ---------------------
+         Material Name   air     
+         Frame Motion?   no      
+         Mesh Motion?    no      
+
+Boundary Conditions
+-------------------
+
+   Zones
+
+      name            id   type              
+      ------------------------------------
+      inlet           47   velocity-inlet    
+      outlet          48   pressure-outlet   
+      lateral_min     49   wall              
+      lateral_max     50   wall              
+      ground          51   wall              
+      top             52   wall              
+      cylinder_wall   53   wall              
+      cylinder_top    54   wall              
+
+   Setup Conditions
+
+      inlet
+
+         Condition                  Value   
+         --------------------------------
+         Velocity Magnitude [m/s]   17      
+
+      outlet
+
+         Condition                                         Value   
+         -------------------------------------------------------
+         Build artificial walls to prevent reverse flow?   yes     
+
+      lateral_min
+
+         Condition                                            Value         
+         ----------------------------------------------------------------
+         Wall Motion                                          Moving Wall   
+         Shear Boundary Condition                             No Slip       
+         Wall Surface Roughness                               Standard      
+         Define wall motion relative to adjacent cell zone?   no            
+         Velocity Magnitude [m/s]                             17            
+         X-Component of Wall Translation                      0             
+         Y-Component of Wall Translation                      1             
+
+      lateral_max
+
+         Condition                                            Value         
+         ----------------------------------------------------------------
+         Wall Motion                                          Moving Wall   
+         Shear Boundary Condition                             No Slip       
+         Wall Surface Roughness                               Standard      
+         Define wall motion relative to adjacent cell zone?   no            
+         Velocity Magnitude [m/s]                             17            
+         X-Component of Wall Translation                      0             
+         Y-Component of Wall Translation                      1             
+
+      ground
+
+         Condition                  Value             
+         ------------------------------------------
+         Wall Motion                Stationary Wall   
+         Shear Boundary Condition   No Slip           
+         Wall Surface Roughness     Standard          
+
+      top
+
+         Condition                                            Value         
+         ----------------------------------------------------------------
+         Wall Motion                                          Moving Wall   
+         Shear Boundary Condition                             No Slip       
+         Wall Surface Roughness                               Standard      
+         Define wall motion relative to adjacent cell zone?   no            
+         Velocity Magnitude [m/s]                             17            
+         X-Component of Wall Translation                      0             
+         Y-Component of Wall Translation                      1             
+
+      cylinder_wall
+
+         Condition                  Value             
+         ------------------------------------------
+         Wall Motion                Stationary Wall   
+         Shear Boundary Condition   No Slip           
+         Wall Surface Roughness     Standard          
+
+      cylinder_top
+
+         Condition                  Value             
+         ------------------------------------------
+         Wall Motion                Stationary Wall   
+         Shear Boundary Condition   No Slip           
+         Wall Surface Roughness     Standard          
+
+Solver Settings
+---------------
+
+   Equations
+
+      Equation     Solved   
+      -------------------
+      Flow         yes      
+      Turbulence   yes      
+
+   Numerics
+
+      Numeric                         Enabled   
+      ---------------------------------------
+      Absolute Velocity Formulation   yes       
+
+   Unsteady Calculation Parameters
+
+                                       
+      ------------------------------
+      Number of Time Steps       0     
+      Time Step Size [s]         0.1   
+      Max Iterations/Time Step   20    
+
+   Under-Relaxation Factors
+
+      Variable                    Relaxation Factor   
+      ---------------------------------------------
+      Pressure                    0.3                 
+      Density                     1                   
+      Body Forces                 1                   
+      Momentum                    0.7                 
+      Turbulent Kinetic Energy    0.8                 
+      Specific Dissipation Rate   0.8                 
+      Turbulent Viscosity         1                   
+
+   Linear Solver
+
+      Variable                    Solver Type   Termination Criterion   Residual Reduction Tolerance   
+      ----------------------------------------------------------------------------------------------
+      Pressure                    V-Cycle       0.1                                                    
+      X-Momentum                  Flexible      0.1                     0.7                            
+      Y-Momentum                  Flexible      0.1                     0.7                            
+      Z-Momentum                  Flexible      0.1                     0.7                            
+      Turbulent Kinetic Energy    Flexible      0.1                     0.7                            
+      Specific Dissipation Rate   Flexible      0.1                     0.7                            
+
+   Pressure-Velocity Coupling
+
+      Parameter   Value    
+      ------------------
+      Type        SIMPLE   
+
+   Discretization Scheme
+
+      Variable                    Scheme                
+      -----------------------------------------------
+      Pressure                    Second Order          
+      Momentum                    Third-Order MUSCL     
+      Turbulent Kinetic Energy    Second Order Upwind   
+      Specific Dissipation Rate   Second Order Upwind   
+
+   Solution Limits
+
+      Quantity                                 Limit      
+      -------------------------------------------------
+      Minimum Absolute Pressure [Pa]           1          
+      Maximum Absolute Pressure [Pa]           5e+10      
+      Minimum Static Temperature [K]           1          
+      Maximum Static Temperature [K]           5000       
+      Minimum Turb. Kinetic Energy [m^2/s^2]   1e-14      
+      Minimum Spec. Dissipation Rate [s^-1]    1e-20      
+      Maximum Turb. Viscosity Ratio            10000000   
+
